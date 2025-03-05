@@ -1,0 +1,12 @@
+# Ignore environment files
+.env
+
+# Ignore Go build files
+/bin/
+/pkg/
+/weather-dashboard
+
+# Ignore compiled binaries
+*.exe
+*.out
+*.o

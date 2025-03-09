@@ -2,11 +2,12 @@
 
 ## Description
 
-This project is a simple weather dashboard built using Go. It fetches current weather data from the OpenWeatherMap API and displays it in a clean format.
+This project is a simple weather dashboard built using Go. It fetches weather data from the OpenWeatherMap API and displays it in a clean command line interface.
 
 ## Features
 
 - Fetch current weather information for any location.
+- Fetch and display a 5-day weather forecast with daily high/low temperatures and conditions.
 - Display temperature, humidity, and wind speed.
 - Supports city names with spaces (e.g., "New York City").
 - Uses environment variables for API key security.
@@ -38,9 +39,12 @@ This project is a simple weather dashboard built using Go. It fetches current we
 ## Libraries Used
 
 - `net/http`: For making HTTP requests to the weather API.
+- `net/url`: For encoding city names in API requests.
 - `encoding/json`: For parsing the JSON data returned by the API.
 - `os`: For reading environment variables.
 - `github.com/joho/godotenv`: For loading API keys from a .env file.
+- `sort`: For sorting forecast data correctly.
+- `time`: For handling and formatting date/time values.
 
 ## License
 

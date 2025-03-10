@@ -33,9 +33,9 @@ type ForecastData struct {
 }
 
 // Fetch current weather
-func GetWeather(city string, apiKey string) (WeatherData, error) {
+func GetWeather(city, unit, apiKey string) (WeatherData, error) {
 	encodedCity := url.QueryEscape(city)
-	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?appid=%s&q=%s&units=metric", apiKey, encodedCity)
+	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?appid=%s&q=%s&units=%s", apiKey, encodedCity, unit)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -53,9 +53,9 @@ func GetWeather(city string, apiKey string) (WeatherData, error) {
 }
 
 // Fetch 5-day forecast
-func GetForecast(city, apiKey string) (ForecastData, error) {
+func GetForecast(city, unit, apiKey string) (ForecastData, error) {
 	encodedCity := url.QueryEscape(city)
-	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/forecast?appid=%s&q=%s&units=metric", apiKey, encodedCity)
+	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/forecast?appid=%s&q=%s&units=%s", apiKey, encodedCity, unit)
 
 	resp, err := http.Get(url)
 	if err != nil {

@@ -38,6 +38,29 @@ func main() {
 		log.Fatal("API key is missing! Please set the WEATHER_API_KEY environment variable.")
 	}
 
+	var unitChoice int
+	var unit string
+	for {
+		fmt.Println("Choose unit system:")
+		fmt.Println("1. Metric (Celsius, m/s)")
+		fmt.Println("2. Imperial (Fahrenheit, mph)")
+		fmt.Print("Enter your choice: ")
+
+		_, err := fmt.Scan(&unitChoice)
+		if err != nil || (unitChoice != 1 && unitChoice != 2) {
+			fmt.Println("Invalid input. Please enter 1 or 2.")
+			reader.ReadString('\n')
+			continue
+		}
+
+		if unitChoice == 1 {
+			unit = "metric"
+		} else {
+			unit = "imperial"
+		}
+		break
+	}
+
 	var choice int
 	for {
 		fmt.Println("Choose an option:")
@@ -55,10 +78,10 @@ func main() {
 
 		switch choice {
 		case 1:
-			fetchAndDisplayCurrentWeather(city, apiKey)
+			fetchAndDisplayCurrentWeather(city, unit, apiKey)
 			return
 		case 2:
-			fetchAndDisplayForecast(city, apiKey)
+			fetchAndDisplayForecast(city, unit, apiKey)
 			return
 		default:
 			fmt.Println("Invalid option. Please enter 1 or 2.")
@@ -67,22 +90,22 @@ func main() {
 }
 
 // Fetch and display current weather
-func fetchAndDisplayCurrentWeather(city, apiKey string) {
-	weatherData, err := weather.GetWeather(city, apiKey)
+func fetchAndDisplayCurrentWeather(city, unit, apiKey string) {
+	weatherData, err := weather.GetWeather(city, unit, apiKey)
 	if err != nil {
 		log.Fatalf("Error fetching weather: %v", err)
 	}
 
 	// Display current weather
 	fmt.Println("\nWeather Data for", city)
-	fmt.Printf("Temperature: %.2f°C\n", weatherData.Main.Temp)
+	fmt.Printf("Temperature: %.2f°%s\n", weatherData.Main.Temp, getTemperatureUnit(unit))
 	fmt.Printf("Humidity: %.2f%%\n", weatherData.Main.Humidity)
-	fmt.Printf("Wind Speed: %.2f m/s\n", weatherData.Wind.Speed)
+	fmt.Printf("Wind Speed: %.2f %s\n", weatherData.Wind.Speed, getWindSpeedUnit(unit))
 }
 
 // Fetch and display 5-day forecast
-func fetchAndDisplayForecast(city, apiKey string) {
-	forecast, err := weather.GetForecast(city, apiKey)
+func fetchAndDisplayForecast(city, unit, apiKey string) {
+	forecast, err := weather.GetForecast(city, unit, apiKey)
 	if err != nil {
 		log.Fatalf("Error fetching forecast: %v", err)
 	}
@@ -132,10 +155,26 @@ func fetchAndDisplayForecast(city, apiKey string) {
 		return t1.Before(t2)
 	})
 
+	tempUnit := getTemperatureUnit(unit)
+
 	// Display 5-day forecast in correct order
 	fmt.Println("\n5-Day Forecast for", city)
 	for _, date := range sortedDates {
 		info := forecastMap[date]
-		fmt.Printf("%s - High: %.1f°C, Low: %.1f°C, %s\n", date, info.MaxTemp, info.MinTemp, info.Condition)
+		fmt.Printf("%s - High: %.1f°%s, Low: %.1f°%s, %s\n", date, info.MaxTemp, tempUnit, info.MinTemp, tempUnit, info.Condition)
 	}
+}
+
+func getTemperatureUnit(unit string) string {
+	if unit == "metric" {
+		return "C"
+	}
+	return "F"
+}
+
+func getWindSpeedUnit(unit string) string {
+	if unit == "metric" {
+		return "m/s"
+	}
+	return "mph"
 }

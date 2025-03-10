@@ -7,8 +7,9 @@ This project is a simple weather dashboard built using Go. It fetches weather da
 ## Features
 
 - Fetch current weather information for any location.
+- Supports both metric and imperial units.
 - Fetch and display a 5-day weather forecast with daily high/low temperatures and conditions.
-- Display temperature, humidity, and wind speed.
+- Display temperature, humidity, visibility, wind speed, and sunrise/sunset times.
 - Supports city names with spaces (e.g., "New York City").
 - Uses environment variables for API key security.
 

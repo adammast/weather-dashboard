@@ -10,12 +10,18 @@ import (
 // Struct to hold current weather data
 type WeatherData struct {
 	Main struct {
-		Temp     float64 `json:"temp"`
-		Humidity float64 `json:"humidity"`
+		Temp      float64 `json:"temp"`
+		FeelsLike float64 `json:"feels_like"`
+		Humidity  float64 `json:"humidity"`
 	} `json:"main"`
 	Wind struct {
 		Speed float64 `json:"speed"`
 	} `json:"wind"`
+	Visibility int `json:"visibility"`
+	Sys        struct {
+		Sunrise int64 `json:"sunrise"`
+		Sunset  int64 `json:"sunset"`
+	} `json:"sys"`
 }
 
 // Struct to hold forecast data

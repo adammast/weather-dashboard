@@ -96,11 +96,21 @@ func fetchAndDisplayCurrentWeather(city, unit, apiKey string) {
 		log.Fatalf("Error fetching weather: %v", err)
 	}
 
+	// Convert visibility from meters to km/miles
+	visibility := float64(weatherData.Visibility) / 1000
+	if unit == "imperial" {
+		visibility = visibility * 0.621371 // Convert km to miles
+	}
+
 	// Display current weather
 	fmt.Println("\nWeather Data for", city)
 	fmt.Printf("Temperature: %.2f°%s\n", weatherData.Main.Temp, getTemperatureUnit(unit))
+	fmt.Printf("Feels Like: %.2f°%s\n", weatherData.Main.FeelsLike, getTemperatureUnit(unit))
 	fmt.Printf("Humidity: %.2f%%\n", weatherData.Main.Humidity)
+	fmt.Printf("Visibility: %.2f %s\n", visibility, getVisibilityUnit(unit))
 	fmt.Printf("Wind Speed: %.2f %s\n", weatherData.Wind.Speed, getWindSpeedUnit(unit))
+	fmt.Printf("Sunrise: %s\n", formatTime(weatherData.Sys.Sunrise))
+	fmt.Printf("Sunset: %s\n", formatTime(weatherData.Sys.Sunset))
 }
 
 // Fetch and display 5-day forecast
@@ -177,4 +187,15 @@ func getWindSpeedUnit(unit string) string {
 		return "m/s"
 	}
 	return "mph"
+}
+
+func getVisibilityUnit(unit string) string {
+	if unit == "metric" {
+		return "km"
+	}
+	return "miles"
+}
+
+func formatTime(timestamp int64) string {
+	return time.Unix(timestamp, 0).Format("15:04 PM MST")
 }

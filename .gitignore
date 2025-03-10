@@ -1,6 +1,9 @@
 # Ignore environment files
 .env
 
+# Ignore log files
+*.log
+
 # Ignore Go build files
 /bin/
 /pkg/

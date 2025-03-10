@@ -12,6 +12,7 @@ This project is a simple weather dashboard built using Go. It fetches weather da
 - Display temperature, humidity, visibility, wind speed, and sunrise/sunset times.
 - Supports city names with spaces (e.g., "New York City").
 - Uses environment variables for API key security.
+- Logs application info and errors to a separate file.
 
 ## Setup
 
@@ -46,6 +47,7 @@ This project is a simple weather dashboard built using Go. It fetches weather da
 - `github.com/joho/godotenv`: For loading API keys from a .env file.
 - `sort`: For sorting forecast data correctly.
 - `time`: For handling and formatting date/time values.
+- `log`: For handling logging to a file and to the console.
 
 ## License
 

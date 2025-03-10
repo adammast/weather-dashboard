@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-// Struct to hold current weather data
+// WeatherData represents the response for current weather
 type WeatherData struct {
 	Main struct {
 		Temp      float64 `json:"temp"`
@@ -24,7 +24,7 @@ type WeatherData struct {
 	} `json:"sys"`
 }
 
-// Struct to hold forecast data
+// ForecastData represents the response for the 5-day forecast
 type ForecastData struct {
 	List []struct {
 		Datetime int64 `json:"dt"`
@@ -45,16 +45,24 @@ func GetWeather(city, unit, apiKey string) (WeatherData, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return WeatherData{}, fmt.Errorf("error fetching weather: %v", err)
+		Logger.Printf("[ERROR] Failed to fetch weather data for %s: %v\n", city, err)
+		return WeatherData{}, fmt.Errorf("failed to fetch weather data: %v", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		Logger.Printf("[ERROR] Received status code %d for %s\n", resp.StatusCode, city)
+		return WeatherData{}, fmt.Errorf("received unexpected status code %d", resp.StatusCode)
+	}
 
 	var data WeatherData
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return WeatherData{}, fmt.Errorf("error decoding response: %v", err)
+		Logger.Printf("[ERROR] Error decoding JSON for %s: %v\n", city, err)
+		return WeatherData{}, fmt.Errorf("error decoding JSON response: %w", err)
 	}
 
+	Logger.Printf("[INFO] Successfully fetched weather data for %s", city)
 	return data, nil
 }
 
@@ -65,15 +73,23 @@ func GetForecast(city, unit, apiKey string) (ForecastData, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return ForecastData{}, fmt.Errorf("error fetching forecast: %v", err)
+		Logger.Printf("[ERROR] Failed to fetch forecast data for %s: %v\n", city, err)
+		return ForecastData{}, fmt.Errorf("failed to fetch forecast data: %v", err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		Logger.Printf("[ERROR] Received status code %d for %s forecast\n", resp.StatusCode, city)
+		return ForecastData{}, fmt.Errorf("received unexpected status code %d", resp.StatusCode)
+	}
 
 	var data ForecastData
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		return ForecastData{}, fmt.Errorf("error decoding response: %v", err)
+		Logger.Printf("[ERROR] Error decoding JSON for forecast of %s: %v\n", city, err)
+		return ForecastData{}, fmt.Errorf("error decoding JSON response: %v", err)
 	}
 
+	Logger.Printf("[INFO] Successfully fetched forecast data for %s", city)
 	return data, nil
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -13,10 +12,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var logger = weather.Logger
+var consoleLogger = weather.ConsoleLogger
+
 func main() {
+	logger.Println("[INFO] Weather dashboard application started.")
+
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Printf("[ERROR] Error loading .env file: %v\n", err)
+		consoleLogger.Fatal("[ERROR] Error loading .env file")
 	}
 
 	// Use bufio to read user input for city
@@ -24,18 +29,23 @@ func main() {
 	fmt.Print("Enter a city name to get weather info for it: ")
 	city, err := reader.ReadString('\n')
 	if err != nil {
-		log.Fatal("Error reading input:", err)
+		logger.Printf("[ERROR] Error reading input: %v\n", err)
+		consoleLogger.Fatal("[ERROR] Error reading input:", err)
 	}
 
 	city = strings.TrimSpace(city)
 	if city == "" {
-		log.Fatal("City name cannot be empty.")
+		logger.Println("[ERROR] City name cannot be empty.")
+		consoleLogger.Fatal("[ERROR] City name cannot be empty.")
 	}
+
+	logger.Printf("[INFO] User entered city: %s\n", city)
 
 	// Get API key
 	apiKey := os.Getenv("WEATHER_API_KEY")
 	if apiKey == "" {
-		log.Fatal("API key is missing! Please set the WEATHER_API_KEY environment variable.")
+		logger.Println("[ERROR] API key is missing.")
+		consoleLogger.Fatal("[ERROR] API key is missing! Please set the WEATHER_API_KEY environment variable.")
 	}
 
 	var unitChoice int
@@ -58,6 +68,7 @@ func main() {
 		} else {
 			unit = "imperial"
 		}
+		logger.Printf("[INFO] User selected unit system: %s\n", unit)
 		break
 	}
 
@@ -78,10 +89,14 @@ func main() {
 
 		switch choice {
 		case 1:
+			logger.Printf("[INFO] User searched for the current weather for city: %s, Unit: %s\n", city, unit)
 			fetchAndDisplayCurrentWeather(city, unit, apiKey)
+			logger.Println("[INFO] Application exited successfully.")
 			return
 		case 2:
+			logger.Printf("[INFO] User searched for the forecast for city: %s, Unit: %s\n", city, unit)
 			fetchAndDisplayForecast(city, unit, apiKey)
+			logger.Println("[INFO] Application exited successfully.")
 			return
 		default:
 			fmt.Println("Invalid option. Please enter 1 or 2.")
@@ -93,7 +108,8 @@ func main() {
 func fetchAndDisplayCurrentWeather(city, unit, apiKey string) {
 	weatherData, err := weather.GetWeather(city, unit, apiKey)
 	if err != nil {
-		log.Fatalf("Error fetching weather: %v", err)
+		logger.Printf("[ERROR] Error fetching weather for %s: %v\n", city, err)
+		consoleLogger.Fatalf("[ERROR] Error fetching weather: %v", err)
 	}
 
 	// Convert visibility from meters to km/miles
@@ -117,7 +133,8 @@ func fetchAndDisplayCurrentWeather(city, unit, apiKey string) {
 func fetchAndDisplayForecast(city, unit, apiKey string) {
 	forecast, err := weather.GetForecast(city, unit, apiKey)
 	if err != nil {
-		log.Fatalf("Error fetching forecast: %v", err)
+		logger.Printf("[ERROR] Error fetching forecast for %s: %v\n", city, err)
+		consoleLogger.Fatalf("[ERROR] Error fetching forecast: %v", err)
 	}
 
 	// Map to store daily high/low temperatures and conditions

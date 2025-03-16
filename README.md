@@ -13,13 +13,15 @@ This project is a simple weather dashboard built using Go. It fetches weather da
 - Supports city names with spaces (e.g., "New York City").
 - Uses environment variables for API key security.
 - Logs application info and errors to a separate file.
+- Supports running in a Docker container.
 
 ## Setup
 
 ### Prerequisites
 - Install [Go](https://go.dev/doc/install) if you haven't already.
+- Install [Docker](https://docs.docker.com/get-docker/) if you want to run the application in a container.
 
-### Installation & Running
+### Installation & Running (Locally)
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/weather-dashboard.git
@@ -36,6 +38,16 @@ This project is a simple weather dashboard built using Go. It fetches weather da
 4. Run the application:
    ```bash
    go run main.go
+   ```
+
+### Running with Docker
+1. Build the Docker image:
+   ```bash
+   docker build -t weather-dashboard .
+   ```
+2. Run the container with your API key:
+   ```bash
+   docker run --rm -it --env WEATHER_API_KEY=your_api_key weather-dashboard
    ```
 
 ## Libraries Used

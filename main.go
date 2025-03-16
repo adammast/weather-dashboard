@@ -18,10 +18,14 @@ var consoleLogger = weather.ConsoleLogger
 func main() {
 	logger.Println("[INFO] Weather dashboard application started.")
 
-	err := godotenv.Load()
-	if err != nil {
-		logger.Printf("[ERROR] Error loading .env file: %v\n", err)
-		consoleLogger.Fatal("[ERROR] Error loading .env file")
+	// Try to load .env file (if it exists)
+	_ = godotenv.Load()
+
+	// Get API key from environment variables
+	apiKey := os.Getenv("WEATHER_API_KEY")
+	if apiKey == "" {
+		logger.Println("[ERROR] API key is missing.")
+		consoleLogger.Fatal("[ERROR] API key is missing! Please set the WEATHER_API_KEY environment variable or define it in a .env file.")
 	}
 
 	// Use bufio to read user input for city
@@ -40,13 +44,6 @@ func main() {
 	}
 
 	logger.Printf("[INFO] User entered city: %s\n", city)
-
-	// Get API key
-	apiKey := os.Getenv("WEATHER_API_KEY")
-	if apiKey == "" {
-		logger.Println("[ERROR] API key is missing.")
-		consoleLogger.Fatal("[ERROR] API key is missing! Please set the WEATHER_API_KEY environment variable.")
-	}
 
 	var unitChoice int
 	var unit string

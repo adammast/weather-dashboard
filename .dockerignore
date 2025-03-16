@@ -1,0 +1,13 @@
+# Ignore environment files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore build artifacts and unnecessary files
+/bin/
+/pkg/
+/weather-dashboard
+*.exe
+*.out
+*.o
